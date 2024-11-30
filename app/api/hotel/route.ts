@@ -2,17 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHotelvalid } from "../../../utils/validation";
 import prisma from "@/utils/db";
 import { pushImage } from "@/utils/cloudinary";
+import { verifyToken } from "@/utils/verifyToken";
 
 /**
  * @route   ~/api/hotel/
  * @desc    create a hotel
- * @method  post
+ * @method  POST
  * @access  private
  */
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.formData();
+    const user = verifyToken();
+    if (!user || !user.userId) {
+      return NextResponse.json({ message: "Login first" }, { status: 401 });
+    }
     if (!body.get("image")) {
       return NextResponse.json(
         { message: "No image provided, access denied" },
@@ -47,7 +52,7 @@ export async function POST(request: NextRequest) {
     }
     const hotel = await prisma.hotel.create({
       data: {
-        userId: 1,
+        userId: user.userId,
         title: obj.title as string,
         description: obj.description as string,
         imageUrl: result.secure_url,

@@ -35,7 +35,6 @@ export default function SignupForm() {
       }
     }
     setMessagesError(messagesError);
-    console.log(data);
     try {
       const response = await fetch(`${DOMAIN}/api/signup`, {
         method: "POST",
@@ -48,7 +47,8 @@ export default function SignupForm() {
       if (!response.ok) {
         throw new Error(details.message);
       }
-      return router.replace("/");
+      router.replace("/");
+      return router.refresh();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Something went wrong!"

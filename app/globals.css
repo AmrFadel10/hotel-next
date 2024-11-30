@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.rdrCalendarWrapper {
+  margin: 0 auto;
+}
+
+.rdrDateDisplayWrapper {
+  display: none;
+}
+
+/* Scrollbar Classes For Google Chrome */
+html::-webkit-scrollbar {
+  width: 12px;
+}
+
+html::-webkit-scrollbar-track {
+  background-color: rgb(187, 179, 179);
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: var(--dark-color);
+  border-radius: 15px;
+}

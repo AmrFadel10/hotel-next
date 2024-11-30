@@ -23,8 +23,14 @@ export async function POST(req: NextRequest) {
       if (typeof value === "string") {
         if (value === "") {
           obj[key] = null;
-        } else if (typeof parseInt(value) === "number") {
-          obj[key] = parseInt(value);
+        } else if (value === "0") {
+          obj[key] = 0;
+        } else if (value === "false") {
+          obj[key] = false;
+        } else if (value === "true") {
+          obj[key] = true;
+        } else if (!!Number(value)) {
+          obj[key] = Number(value);
         } else {
           obj[key] = value;
         }
@@ -32,7 +38,6 @@ export async function POST(req: NextRequest) {
         obj[key] = value;
       }
     }
-
     //validation
     const validate = CreateRoomValid.safeParse(obj);
     if (!validate.success) {
@@ -82,8 +87,9 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    console.log(error);
     const messageError =
       error instanceof Error ? error.message : "Internal server error!";
-    NextResponse.json({ message: messageError }, { status: 500 });
+    return NextResponse.json({ message: messageError }, { status: 500 });
   }
 }

@@ -17,10 +17,13 @@ export default async function page({ params: { hotelId } }: propsType) {
   if (hotelId !== "create" && hotelId !== "") {
     hotel = await getHotel({ hotelId });
   }
+  // const rooms = await getRoomsByHotel(hotelId);
   // if(user.userId !== hotel.)
   return (
     <section className="w-full">
-      <h2 className="mb-2 text-3xl font-semibold">Create your hotel!</h2>
+      <h2 className="mb-6 md:text-3xl text-xl font-bold border-b pb-3 w-fit">
+        {hotelId !== "create" && hotelId !== "" ? "Edit" : "Create"} your hotel!
+      </h2>
       {hotel ? <CreateHotelForm hotel={hotel} /> : <CreateHotelForm />}
     </section>
   );

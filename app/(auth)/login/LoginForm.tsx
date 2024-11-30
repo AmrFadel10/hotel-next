@@ -33,7 +33,6 @@ export default function LoginForm() {
       }
     }
     setMessagesError(messagesError);
-    console.log(data);
     try {
       const response = await fetch(`${DOMAIN}/api/login`, {
         method: "POST",
@@ -46,7 +45,8 @@ export default function LoginForm() {
       if (!response.ok) {
         throw new Error(details.message);
       }
-      return router.replace("/");
+      router.replace("/");
+      return router.refresh();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Something went wrong!"

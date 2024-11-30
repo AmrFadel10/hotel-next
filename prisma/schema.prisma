@@ -18,6 +18,8 @@ model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique @db.VarChar(100)
   username  String    @db.VarChar(50)
+  imageUrl  String?
+  imageId   String?
   password  String    @db.VarChar(120)
   addedAt   DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -30,13 +32,13 @@ model Hotel {
   id                  String    @id @default(uuid())
   userId              Int
   title               String    @db.VarChar(120)
-  description         String    @db.VarChar(500)
+  description         String    @db.VarChar(1500)
   imageUrl            String
   imageId             String
   country             String
   state               String?
   city                String?
-  locationDescription String    @db.VarChar(500)
+  locationDescription String    @db.VarChar(1500)
   gym                 Boolean
   spa                 Boolean
   laundry             Boolean
@@ -61,10 +63,10 @@ model Room {
   title          String    @db.VarChar(120)
   description    String    @db.VarChar(500)
   bedCount       Int       @default(0)
-  guestCount     Int       @default(0)
+  guestCount     Int?      @default(0)
   bathroomCount  Int       @default(0)
-  kingBed        Int       @default(0)
-  queenBed       Int       @default(0)
+  kingBed        Int?      @default(0)
+  queenBed       Int?      @default(0)
   imageId        String
   imageUrl       String
   breakFastPrice Int
@@ -89,6 +91,7 @@ model Room {
 model Booking {
   id                String   @id @default(uuid())
   userName          String
+  userEmail         String
   userId            Int
   roomId            String
   hotelId           String
@@ -101,10 +104,10 @@ model Booking {
   paymentStatus     Boolean  @default(false)
   paymentIntentId   String   @unique
   bookedAt          DateTime @default(now())
-
-  Hotel Hotel @relation(fields: [hotelId], references: [id])
-  Room  Room  @relation(fields: [roomId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
+  updatedAt         DateTime @updatedAt
+  Hotel             Hotel    @relation(fields: [hotelId], references: [id])
+  Room              Room     @relation(fields: [roomId], references: [id])
+  user              User     @relation(fields: [userId], references: [id])
 
   @@index([hotelId])
   @@index([roomId])

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 /**
@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
  * @access  public
  */
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     cookies().delete("token");
     return NextResponse.json({ message: "logout" }, { status: 200 });

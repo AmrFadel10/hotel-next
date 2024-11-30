@@ -94,6 +94,40 @@ export async function PUT(req: NextRequest, { id }: { id: string }) {
   } catch (error) {
     const messageError =
       error instanceof Error ? error.message : "Internal server error!";
-    NextResponse.json({ message: messageError }, { status: 500 });
+    return NextResponse.json({ message: messageError }, { status: 500 });
+  }
+}
+
+/**
+ * @route   ~/api/room/:id
+ * @desc    delete room
+ * @method  DELETE
+ * @access  private
+ */
+
+export async function DELETE(
+  request: NextRequest,
+  { params: { id } }: { params: { id: string } }
+) {
+  try {
+    const room = await prisma.room.findUnique({
+      where: { id },
+    });
+    if (!room) {
+      return NextResponse.json({ message: "Room not found" }, { status: 400 });
+    }
+    await removeImage(room.imageId);
+    await prisma.room.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { message: "Room has been deleted successfully!" },
+      { status: 200 }
+    );
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal server error";
+    return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
 }

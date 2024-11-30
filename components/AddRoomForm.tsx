@@ -4,6 +4,7 @@ import { CreateRoomValid } from "@/utils/validation";
 import { Hotel, Room } from "@prisma/client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, {
   ChangeEvent,
   Dispatch,
@@ -26,19 +27,22 @@ type propsType = {
 
 export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
   const [loading, setLoading] = useState(false);
-
-  const [data, setData] = useState<inputsRoomTypes>({
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
+    {}
+  );
+  const router = useRouter();
+  const [inputs, setInputs] = useState<inputsRoomTypes>({
     // This is your Prisma schema file,
     title: "",
     description: "",
-    bedCount: "",
-    guestCount: "",
-    bathroomCount: "",
-    kingBed: "",
-    queenBed: "",
+    bedCount: 1,
+    guestCount: 0,
+    bathroomCount: 1,
+    kingBed: 0,
+    queenBed: 0,
     image: null,
-    breakFastPrice: "",
-    roomPrice: "",
+    breakFastPrice: 5,
+    roomPrice: 10,
     roomservice: false,
     tv: false,
     balcony: false,
@@ -57,31 +61,34 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
     e.preventDefault();
     setLoading(true);
     try {
-      const validate = CreateRoomValid.safeParse(data);
+      const validate = CreateRoomValid.safeParse(inputs);
       const result: { [key: string]: string } = {};
       if (!validate.success) {
         validate.error.errors.map((error) => {
           result[error.path[0]] = error.message;
         });
+        setErrorMessages(result);
+      } else {
+        //append inputs into form inputs
+        const forminputs = new FormData();
+        for (const [key, value] of Object.entries(inputs)) {
+          forminputs.append(key, value);
+        }
+
+        const response = await fetch(`${DOMAIN}/api/room`, {
+          method: "POST",
+          body: forminputs,
+        });
+
+        const info = await response.json();
+
+        if (!response.ok) {
+          throw new Error(info.message);
+        }
+        setOpen(false);
+        router.refresh();
+        return toast.success(info.message);
       }
-
-      //append data into form data
-      const formData = new FormData();
-      for (const [key, value] of Object.entries(data)) {
-        formData.append(key, value);
-      }
-
-      const response = await fetch(`${DOMAIN}/api/room`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const info = await response.json();
-
-      if (!response.ok) {
-        throw new Error(info.message);
-      }
-      return toast.success(info.message);
     } catch (error) {
       return toast.error(
         error instanceof Error ? error.message : "Something went wrong!"
@@ -90,9 +97,8 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
       setLoading(false);
     }
   };
-
   return (
-    <main className="fixed w-full h-screen bg-blend-overlay bg-black/70 left-0 top-0 flex justify-center items-center">
+    <main className="fixed w-full h-screen bg-blend-overlay bg-black/70 left-0 top-0 flex justify-center items-center z-10">
       <section className="w-[90%] max-w-[900px] rounded-lg md:py-8 py-3 md:px-8 px-2 shadow-md bg-gray-50 relative h-[70vh] overflow-y-auto">
         <IoIosClose
           className="absolute top-2 right-1 text-red-500 hover:text-red-700 cursor-pointer"
@@ -115,11 +121,16 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
               name="title"
               id="title"
               className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-              value={data.title}
+              value={inputs.title}
               onChange={(e) => {
-                setData({ ...data, title: e.target.value });
+                setInputs({ ...inputs, title: e.target.value });
               }}
             />
+            {!!errorMessages.title && (
+              <p className="text-red-500 text-[12px] font-bold pl-2">
+                {errorMessages.title}
+              </p>
+            )}
           </div>
           <div>
             <label htmlFor="description" className="font-semibold mb-2 block">
@@ -133,11 +144,16 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
               id="description"
               rows={3}
               className="text-sm px-3 py-3  focus:outline-none border rounded-xl w-full text-gray-700 resize-none"
-              value={data.description}
+              value={inputs.description}
               onChange={(e) => {
-                setData({ ...data, description: e.target.value });
+                setInputs({ ...inputs, description: e.target.value });
               }}
             />
+            {!!errorMessages.description && (
+              <p className="text-red-500 text-[12px] font-bold pl-2">
+                {errorMessages.description}
+              </p>
+            )}
           </div>
           <div>
             <h3 className="font-semibold mb-2 block">Choose room Amenities</h3>
@@ -157,11 +173,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="roomservice"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, roomservice: !ele.roomservice };
+                        setInputs((ele) => {
+                          return { ...inputs, roomservice: !ele.roomservice };
                         })
                       }
-                      checked={data.roomservice}
+                      checked={inputs.roomservice}
                     />
                     24hrs roomservice
                   </label>
@@ -177,11 +193,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="tv"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, tv: !ele.tv };
+                        setInputs((ele) => {
+                          return { ...inputs, tv: !ele.tv };
                         })
                       }
-                      checked={data.tv}
+                      checked={inputs.tv}
                     />
                     TV
                   </label>
@@ -197,11 +213,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="balcony"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, balcony: !ele.balcony };
+                        setInputs((ele) => {
+                          return { ...inputs, balcony: !ele.balcony };
                         })
                       }
-                      checked={data.balcony}
+                      checked={inputs.balcony}
                     />
                     balcony
                   </label>
@@ -217,11 +233,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="freeWifi"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, freeWifi: !ele.freeWifi };
+                        setInputs((ele) => {
+                          return { ...inputs, freeWifi: !ele.freeWifi };
                         })
                       }
-                      checked={data.freeWifi}
+                      checked={inputs.freeWifi}
                     />
                     freeWifi
                   </label>
@@ -239,11 +255,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="cityView"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, cityView: !ele.cityView };
+                        setInputs((ele) => {
+                          return { ...inputs, cityView: !ele.cityView };
                         })
                       }
-                      checked={data.cityView}
+                      checked={inputs.cityView}
                     />
                     cityView
                   </label>
@@ -259,11 +275,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="mountainView"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, mountainView: !ele.mountainView };
+                        setInputs((ele) => {
+                          return { ...inputs, mountainView: !ele.mountainView };
                         })
                       }
-                      checked={data.mountainView}
+                      checked={inputs.mountainView}
                     />
                     mountainView
                   </label>
@@ -279,11 +295,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="airCondition"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, airCondition: !ele.airCondition };
+                        setInputs((ele) => {
+                          return { ...inputs, airCondition: !ele.airCondition };
                         })
                       }
-                      checked={data.airCondition}
+                      checked={inputs.airCondition}
                     />
                     airCondition
                   </label>
@@ -299,11 +315,11 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                       id="soundProofed"
                       className="text-sm px-4 py-3 focus:outline-none border rounded-xl  text-gray-700 scale-[1.45]"
                       onChange={() =>
-                        setData((ele) => {
-                          return { ...data, soundProofed: !ele.soundProofed };
+                        setInputs((ele) => {
+                          return { ...inputs, soundProofed: !ele.soundProofed };
                         })
                       }
-                      checked={data.soundProofed}
+                      checked={inputs.soundProofed}
                     />
                     soundProofed
                   </label>
@@ -316,7 +332,7 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
               Provide your hotel image
             </small>
             <label
-              htmlFor="image"
+              htmlFor="image1"
               className="border-2 rounded-lg  w-full h-40 cursor-pointer text-sm font-bold text-gray-600 shadow-sm hover:bg-gray-50 flex items-center justify-center"
             >
               <span className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-slate-50">
@@ -324,30 +340,31 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
               </span>
               <input
                 type="file"
-                id="image"
+                id="image1"
                 accept="image/*"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  if (!e.target.files) return;
-                  setData({ ...data, image: e.target.files?.[0] });
+                  if (!e.target.files?.[0]) return;
+                  setInputs({ ...inputs, image: e.target.files?.[0] });
                 }}
                 className="sr-only"
               />
             </label>
-            {/* {!!messagesError.image && (
+            {!!errorMessages.image && (
               <p className="text-red-500 text-[12px] font-bold pl-2">
-                {messagesError.image}
+                {errorMessages.image}
               </p>
-            )} */}
-            {data.image && (
+            )}
+
+            {inputs.image && (
               <div className="w-40 h-80 mt-8">
                 <Image
                   alt="img"
                   width={160}
                   height={320}
                   src={
-                    typeof data.image === "string"
-                      ? data.image
-                      : URL.createObjectURL(data.image)
+                    typeof inputs.image === "string"
+                      ? inputs.image
+                      : URL.createObjectURL(inputs.image)
                   }
                 />
               </div>
@@ -367,11 +384,19 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                   name="roomPrice"
                   id="roomPrice"
                   className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-                  value={data.roomPrice}
+                  value={inputs.roomPrice}
                   onChange={(e) => {
-                    setData({ ...data, roomPrice: e.target.value });
+                    setInputs({
+                      ...inputs,
+                      roomPrice: parseInt(e.target.value),
+                    });
                   }}
                 />
+                {!!errorMessages.roomPrice && (
+                  <p className="text-red-500 text-[12px] font-bold pl-2">
+                    {errorMessages.roomPrice}
+                  </p>
+                )}
               </div>
               <div>
                 <label htmlFor="roomPrice" className="font-semibold mb-2 block">
@@ -382,14 +407,22 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                 </small>
                 <input
                   type="number"
-                  name="roomPrice"
-                  id="roomPrice"
+                  name="breakFastPrice"
+                  id="breakFastPrice"
                   className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-                  value={data.roomPrice}
+                  value={inputs.breakFastPrice}
                   onChange={(e) => {
-                    setData({ ...data, roomPrice: e.target.value });
+                    setInputs({
+                      ...inputs,
+                      breakFastPrice: parseInt(e.target.value),
+                    });
                   }}
                 />
+                {!!errorMessages.breakFastPrice && (
+                  <p className="text-red-500 text-[12px] font-bold pl-2">
+                    {errorMessages.breakFastPrice}
+                  </p>
+                )}
               </div>
               <div>
                 <label htmlFor="bedCount" className="font-semibold mb-2 block">
@@ -403,11 +436,19 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                   name="bedCount"
                   id="bedCount"
                   className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-                  value={data.bedCount}
+                  value={inputs.bedCount}
                   onChange={(e) => {
-                    setData({ ...data, bedCount: e.target.value });
+                    setInputs({
+                      ...inputs,
+                      bedCount: parseInt(e.target.value),
+                    });
                   }}
                 />
+                {!!errorMessages.bedCount && (
+                  <p className="text-red-500 text-[12px] font-bold pl-2">
+                    {errorMessages.bedCount}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -424,11 +465,19 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                   name="guestCount"
                   id="guestCount"
                   className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-                  value={data.guestCount}
+                  value={inputs.guestCount}
                   onChange={(e) => {
-                    setData({ ...data, guestCount: e.target.value });
+                    setInputs({
+                      ...inputs,
+                      guestCount: parseInt(e.target.value),
+                    });
                   }}
                 />
+                {!!errorMessages.guestCount && (
+                  <p className="text-red-500 text-[12px] font-bold pl-2">
+                    {errorMessages.guestCount}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex gap-3 flex-col flex-1">
@@ -447,11 +496,19 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                   name="bathroomCount"
                   id="bathroomCount"
                   className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-                  value={data.bathroomCount}
+                  value={inputs.bathroomCount}
                   onChange={(e) => {
-                    setData({ ...data, bathroomCount: e.target.value });
+                    setInputs({
+                      ...inputs,
+                      bathroomCount: parseInt(e.target.value),
+                    });
                   }}
                 />
+                {!!errorMessages.bathroomCount && (
+                  <p className="text-red-500 text-[12px] font-bold pl-2">
+                    {errorMessages.bathroomCount}
+                  </p>
+                )}
               </div>
               <div>
                 <label htmlFor="kingBed" className="font-semibold mb-2 block">
@@ -465,11 +522,16 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                   name="kingBed"
                   id="kingBed"
                   className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-                  value={data.kingBed}
+                  value={inputs.kingBed}
                   onChange={(e) => {
-                    setData({ ...data, kingBed: e.target.value });
+                    setInputs({ ...inputs, kingBed: parseInt(e.target.value) });
                   }}
                 />
+                {!!errorMessages.kingBed && (
+                  <p className="text-red-500 text-[12px] font-bold pl-2">
+                    {errorMessages.kingBed}
+                  </p>
+                )}
               </div>
               <div>
                 <label htmlFor="queenBed" className="font-semibold mb-2 block">
@@ -483,11 +545,19 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
                   name="queenBed"
                   id="queenBed"
                   className="text-sm px-4 py-3 focus:outline-none border rounded-xl w-full text-gray-700"
-                  value={data.queenBed}
+                  value={inputs.queenBed}
                   onChange={(e) => {
-                    setData({ ...data, queenBed: e.target.value });
+                    setInputs({
+                      ...inputs,
+                      queenBed: parseInt(e.target.value),
+                    });
                   }}
                 />
+                {!!errorMessages.queenBed && (
+                  <p className="text-red-500 text-[12px] font-bold pl-2">
+                    {errorMessages.queenBed}
+                  </p>
+                )}
               </div>
             </div>
           </div>

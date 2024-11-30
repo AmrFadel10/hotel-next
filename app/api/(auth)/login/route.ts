@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    setCookie({ username: user.username, userId: user.id });
+    setCookie({ username: user.username, userId: user.id, email: user.email });
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
     const errorMessage =

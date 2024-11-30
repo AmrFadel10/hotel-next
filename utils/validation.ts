@@ -40,7 +40,7 @@ export const createHotelvalid = z.object({
   description: z
     .string({ required_error: "Description is required" })
     .min(50, "Description must be above or equal 50 characters")
-    .max(500, "Description must be lower than 500 characters"),
+    .max(1500, "Description must be lower than 1500 characters"),
   country: z
     .string({ required_error: "Country is required" })
     .min(2, "Country must be above or equal 2 characters")
@@ -58,7 +58,7 @@ export const createHotelvalid = z.object({
   locationDescription: z
     .string()
     .min(2, "Location description must be above or equal 2 characters")
-    .max(200, "Location description must be lower than 200 characters"),
+    .max(1500, "Location description must be lower than 1500 characters"),
   gym: z.coerce.boolean().optional(),
   spa: z.coerce.boolean().optional(),
   laundry: z.coerce.boolean().optional(),
@@ -81,7 +81,7 @@ export const updateHotelvalid = z.object({
   description: z
     .string()
     .min(50, "Title must be above or equal 50 characters")
-    .max(500, "Title must be lower than 500 characters")
+    .max(1500, "Title must be lower than 1500 characters")
     .optional(),
   country: z
     .string()
@@ -101,7 +101,7 @@ export const updateHotelvalid = z.object({
   locationDescription: z
     .string()
     .min(2, "Location description must be above or equal 2 characters")
-    .max(120, "Location description must be lower than 50 characters")
+    .max(1500, "Location description must be lower than 1500 characters")
     .optional(),
   gym: z.coerce.boolean().optional(),
   spa: z.coerce.boolean().optional(),
@@ -120,20 +120,23 @@ export const updateHotelvalid = z.object({
 
 export const CreateRoomValid = z.object({
   title: z
-    .string({ required_error: "Title is required" })
+    .string({
+      required_error: "Title is required",
+      invalid_type_error: "title must be string",
+    })
     .min(3, "Title must be contain at least 3 letters")
     .max(100, "Title must be maximum 100 letters"),
   description: z
     .string({ required_error: "Description is required" })
     .min(50, "Description must be contain at least 50 letters")
-    .max(500, "Description must be maximum 500 letters"),
+    .max(1500, "Description must be maximum 1500 letters"),
   bedCount: z.coerce
     .number({ required_error: "Bed Count is required" })
     .min(1, "Bed must be at least 1 bed")
     .max(3, "Bed count maximum 3 beds"),
   guestCount: z.coerce
     .number({ required_error: "Guest Count is required" })
-    .min(1, "Guest bed must be at least 1 bed")
+    .min(0, "Guest bed must be at least 0 bed")
     .max(3, "Guest count maximum 3 beds")
     .optional(),
   bathroomCount: z.coerce
@@ -142,22 +145,22 @@ export const CreateRoomValid = z.object({
     .max(3, "Bathroom count maximum 3 beds"),
   kingBed: z.coerce
     .number({ required_error: "king bed count is required" })
-    .min(1, "king bed Count must be at least 1 bed")
+    .min(0, "king bed Count must be at least 0 bed")
     .max(3, "king bed count maximum 3 beds")
     .optional(),
   queenBed: z.coerce
     .number({ required_error: "Queen bed count is required" })
-    .min(1, "Queen bed Count must be at least 1 bed")
+    .min(0, "Queen bed Count must be at least 0 bed")
     .max(3, "Queen bed count maximum 3 beds")
     .optional(),
   image: z.union([
-    z.string({ required_error: "image is required" }),
     z
       .instanceof(File, { message: "Image must be File" })
       .refine(
         (file) => file.type.startsWith("image"),
         "Image must be File(image)"
       ),
+    z.string(),
   ]),
   breakFastPrice: z.coerce
     .number({ required_error: "breakfast price is required" })
@@ -165,8 +168,8 @@ export const CreateRoomValid = z.object({
     .max(50, "breakfast price must be maximum $50"),
   roomPrice: z.coerce
     .number({ required_error: "Room price is required" })
-    .min(5, "Room pric must be minimum $10")
-    .max(50, "Room pric must be maximum $5000"),
+    .min(10, "Room price must be minimum $10")
+    .max(5000, "Room price must be maximum $5000"),
   roomservice: z.coerce
     .boolean({
       invalid_type_error: "Room service must be boolean value!",
@@ -222,7 +225,7 @@ export const UpdateRoomValid = z.object({
   description: z
     .string()
     .min(50, "Description must be contain at least 50 letters")
-    .max(500, "Description must be maximum 500 letters")
+    .max(1500, "Description must be maximum 1500 letters")
     .optional(),
   bedCount: z.coerce
     .number()
@@ -267,8 +270,8 @@ export const UpdateRoomValid = z.object({
     .optional(),
   roomPrice: z.coerce
     .number()
-    .min(5, "Room pric must be minimum $10")
-    .max(50, "Room pric must be maximum $5000")
+    .min(5, "Room price must be minimum $10")
+    .max(50, "Room price must be maximum $5000")
     .optional(),
   roomservice: z.coerce
     .boolean({

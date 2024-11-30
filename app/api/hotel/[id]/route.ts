@@ -44,7 +44,6 @@ export async function PUT(
     }
     //edit image
     const imageBody = body.get("image") as File;
-    console.log(imageBody, "dddddddddddddddddddddddddddddddddddddddddddd");
     let result;
     if (imageBody instanceof File) {
       await removeImage(checkHotel.imageId);
@@ -113,8 +112,35 @@ export async function DELETE(
 
     return NextResponse.json(
       { message: "Hotel has been deleted successfully!" },
-      { status: 203 }
+      { status: 200 }
     );
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal server error";
+    return NextResponse.json({ message: errorMessage }, { status: 500 });
+  }
+}
+
+/**
+ * @route   ~/api/hotel/:id
+ * @desc    delete a hotel
+ * @method  GET
+ * @access  public
+ */
+
+export async function GET(
+  request: NextRequest,
+  { params: { id } }: { params: { id: string } }
+) {
+  try {
+    const hotel = await prisma.hotel.findUnique({
+      where: { id },
+    });
+    if (!hotel) {
+      return NextResponse.json({ message: "Hotel not found" }, { status: 400 });
+    }
+
+    return NextResponse.json(hotel, { status: 200 });
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Internal server error";

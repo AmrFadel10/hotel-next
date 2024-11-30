@@ -42,9 +42,14 @@ export async function POST(request: NextRequest) {
         password: hashedPassword,
       },
     });
-    setCookie({ username: newUser.username, userId: newUser.id });
+    setCookie({
+      username: newUser.username,
+      userId: newUser.id,
+      email: newUser.email,
+    });
     return NextResponse.json(newUser, { status: 201 });
   } catch (error) {
+    console.log(error);
     const errorMessage =
       error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ message: errorMessage }, { status: 500 });
