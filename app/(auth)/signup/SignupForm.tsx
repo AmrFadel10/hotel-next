@@ -50,6 +50,8 @@ export default function SignupForm() {
       router.replace("/");
       return router.refresh();
     } catch (error) {
+      console.log(error);
+
       toast.error(
         error instanceof Error ? error.message : "Something went wrong!"
       );
