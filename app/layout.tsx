@@ -13,9 +13,9 @@ const cairo = Cairo({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 export const metadata: Metadata = {
-  title: "AF | Hotel",
+  title: "AF | Hotel reservation",
   description: "you can reserve room in out hotels.",
-  icons: "/logo.png",
+  icons: "/favicon.png",
 };
 
 export default async function RootLayout({
