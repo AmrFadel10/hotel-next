@@ -17,13 +17,15 @@ export default async function page() {
     );
   } else {
     return (
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start py-8 gap-4">
+      <section className=" py-8">
         <h2 className="mb-4 md:text-3xl text-xl font-bold border-b pb-3 w-fit">
           My hotels:-
         </h2>
-        {hotels.map((hotel, index) => {
-          return <HotelCard hotel={hotel} key={index} />;
-        })}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-center  gap-4">
+          {hotels.map((hotel, index) => {
+            return <HotelCard hotel={hotel} key={index} />;
+          })}
+        </div>
       </section>
     );
   }
