@@ -136,7 +136,9 @@ function CreateHotelForm({ hotel }: { hotel?: hotelPropsType }) {
         }
         const details = (await response.json()) as Hotel;
         toast.success("Hotel has been created successfully✅");
-        return router.replace(`/hotel/${details.id}`);
+        router.replace(`/hotel/${details.id}`);
+        router.refresh();
+        return;
       }
     } catch (error) {
       toast.error(
@@ -158,7 +160,9 @@ function CreateHotelForm({ hotel }: { hotel?: hotelPropsType }) {
       }
       const details = await response.json();
       toast.success(`${details.message}✅`);
-      return router.replace(`/`);
+      router.replace(`/`);
+      router.refresh();
+      return;
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Something went wrong!"
