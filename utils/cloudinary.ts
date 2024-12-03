@@ -2,9 +2,9 @@ import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 
 cloudinary.config({
-  cloud_name: "dh7ibwhqo",
-  api_key: "397564969546264",
-  api_secret: "neAssNZrOixrJryEWlxwea4gVYQ",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 export const pushImage = async (file: File) => {
