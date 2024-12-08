@@ -83,17 +83,15 @@ function CreateHotelForm({ hotel }: { hotel?: hotelPropsType }) {
             city: !city.length ? undefined : city,
             state: !state.length ? undefined : state,
             country,
-            image,
           })
         : createHotelvalid.safeParse({
             ...data,
             city: !city.length ? undefined : city,
             state: !state.length ? undefined : state,
             country,
-            image,
           });
 
-      if (!(image instanceof File) && !hotel) {
+      if (!(image instanceof File)) {
         throw new Error("you must provide image!");
       }
       const messagesError: { [prop: string]: string } = {};
@@ -108,7 +106,7 @@ function CreateHotelForm({ hotel }: { hotel?: hotelPropsType }) {
         formData.append("state", state as string);
         formData.append("country", country as string);
         formData.append("city", city);
-        formData.append("image", image!);
+        formData.append("image", image as File);
         for (const [key, value] of Object.entries(data)) {
           formData.append(key, value as string);
         }
