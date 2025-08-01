@@ -115,9 +115,9 @@ function CreateHotelForm({ hotel }: { hotel?: hotelPropsType }) {
           response = await fetch(`${DOMAIN}/api/hotel/${hotel.id}`, {
             method: "PUT",
             body: formData,
-            // headers: {
-            //   "content-type": "multipart/form-data",
-            // },
+            headers: {
+              "content-type": "multipart/form-data",
+            },
           });
         } else {
           response = await fetch(`${DOMAIN}/api/hotel`, {

@@ -22,7 +22,6 @@ export default function Search() {
       );
     }
   }, [search]);
-
   return (
     <div className="relative">
       <LuSearch

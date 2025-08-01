@@ -1,5 +1,5 @@
 interface JWTPayloadTypes {
-  userId: number;
+  userId: string;
   username: string;
   email: string;
 }
@@ -10,7 +10,7 @@ interface ErrorPageTypes {
 }
 
 interface JWTPayloadType {
-  userId: number;
+  userId: string;
   username: string;
   email: string;
 }

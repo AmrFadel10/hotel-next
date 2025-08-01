@@ -2,6 +2,8 @@ import { getHotels } from "@/components/GetHotels";
 import HotelList from "@/components/HotelList";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home({
   searchParams: { search, country, city, state },
 }: {

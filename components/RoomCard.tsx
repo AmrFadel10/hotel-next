@@ -29,7 +29,7 @@ export default function RoomCard({
 }: {
   room: Room;
   hotelId?: string;
-  hotelOwnerId?: number;
+  hotelOwnerId?: string;
   bookings?: Booking[];
 }) {
   const hotelDetails = usePathname().includes("hotel-details");

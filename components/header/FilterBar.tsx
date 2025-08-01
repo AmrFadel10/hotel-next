@@ -2,8 +2,7 @@
 import { CreateQueryString } from "@/utils/QueryString";
 import useLocations from "@/utils/useLocation";
 import { ICity, IState } from "country-state-city";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function FilterBar() {

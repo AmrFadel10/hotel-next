@@ -18,7 +18,7 @@ export default async function page() {
     );
   }
   return (
-    <main className="">
+    <main>
       <h2 className="md:font-extrabold font-semibold md:text-4xl text-xl mt-4 mb-10 text-gray-800">
         Here are bookings you have made:
       </h2>

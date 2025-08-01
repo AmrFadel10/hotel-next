@@ -1,7 +1,9 @@
 "use client";
 
+import { ReadonlyURLSearchParams } from "next/navigation";
+
 export const CreateQueryString = (
-  searchParams: any,
+  searchParams: ReadonlyURLSearchParams,
   name: string,
   value: string
 ) => {

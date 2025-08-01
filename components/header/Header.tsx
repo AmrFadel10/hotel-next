@@ -3,7 +3,7 @@ import { FiUser } from "react-icons/fi";
 import Image from "next/image";
 import Link from "next/link";
 import { User } from "@prisma/client";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { DOMAIN } from "@/utils/CONSTANTS";
 import { usePathname, useRouter } from "next/navigation";
@@ -38,11 +38,7 @@ export default function Header({ user }: { user?: User }) {
         >
           <Image src={"/logo.png"} fill alt="logo" priority />
         </Link>
-        {pathName === "/" && (
-          <Suspense>
-            <Search />
-          </Suspense>
-        )}
+        {pathName === "/" && <Search />}
         <div>
           {user ? (
             <div className="font-bold text-sm capitalize flex gap-2 items-center">
@@ -104,11 +100,7 @@ export default function Header({ user }: { user?: User }) {
           )}
         </div>
       </header>
-      {pathName === "/" && (
-        <Suspense>
-          <FilterBar />
-        </Suspense>
-      )}
+      {pathName === "/" && <FilterBar />}
     </>
   );
 }

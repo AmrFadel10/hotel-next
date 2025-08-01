@@ -58,7 +58,7 @@ export async function PUT(
     const hotel = await prisma.hotel.update({
       where: { id },
       data: {
-        userId: 1,
+        userId: request.cookies.get("userId")?.value,
         title: obj.title as string,
         description: obj.description as string,
         imageId: result?.public_id as string,

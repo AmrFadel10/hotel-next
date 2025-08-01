@@ -1,5 +1,5 @@
 "use client";
-import { Hotel, Room } from "@prisma/client";
+import { Hotel } from "@prisma/client";
 import Image from "next/image";
 import React from "react";
 import { FiMapPin } from "react-icons/fi";
@@ -11,10 +11,8 @@ import { BiCoffee } from "react-icons/bi";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-type hotel = Hotel & { rooms: Room[] };
-
 interface propsType {
-  hotel: hotel;
+  hotel: Hotel;
 }
 export default function HotelCard({ hotel }: propsType) {
   const { getCountryByCode } = useLocations();

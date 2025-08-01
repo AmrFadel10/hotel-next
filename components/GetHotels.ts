@@ -9,7 +9,7 @@ export const getHotels = async (
   try {
     const hotels = await prisma.hotel.findMany({
       where: {
-        title: { contains: title },
+        title: { contains: title, mode: "insensitive" },
         country,
         state,
         city,

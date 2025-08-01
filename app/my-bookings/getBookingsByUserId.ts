@@ -1,6 +1,6 @@
 import prisma from "@/utils/db";
 
-export default async function getBookingsByUserId(userId: number) {
+export default async function getBookingsByUserId(userId: string) {
   try {
     const bookingsByUserId = await prisma.booking.findMany({
       where: {

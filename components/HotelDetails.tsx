@@ -28,7 +28,7 @@ export default function HotelDetails({
 
   return (
     <>
-      <div className="relative w-full h-80 rounded-xl overflow-hidden bg-zinc-50">
+      <div className="relative w-full h-96 rounded-xl overflow-hidden bg-zinc-50">
         <Image alt="image" src={hotel?.imageUrl as string} priority fill />
       </div>
       <h1 className="text-2xl font-bold capitalize mt-2 mb-1 ">
