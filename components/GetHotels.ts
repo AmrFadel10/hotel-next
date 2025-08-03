@@ -1,6 +1,6 @@
 import prisma from "@/utils/db";
 
-export const getHotels = async (
+export const getHotels = async (page:number,
   title?: string,
   country?: string,
   city?: string,
@@ -15,8 +15,18 @@ export const getHotels = async (
         city,
       },
       include: { rooms: true },
+      take:9,
+      skip:(page-1) * 9
     });
-    return hotels;
+    const count = await prisma.hotel.count({
+      where: {
+        title: { contains: title, mode: "insensitive" },
+        country,
+        state,
+        city,
+      }
+    });
+    return {hotels,count};
   } catch (error) {
     throw error;
   }

@@ -108,7 +108,7 @@ export default function FilterBar() {
       </select>
       <button
         onClick={() => router.push(`${pathName}`)}
-        className="bg-slate-900 rounded-md py-2 px-4 text-slate-50 text-xs font-bold hover:bg-slate-950"
+        className="bg-slate-800 rounded-md py-2 px-4 text-slate-50 text-xs font-bold hover:bg-slate-950"
       >
         Clear filter
       </button>

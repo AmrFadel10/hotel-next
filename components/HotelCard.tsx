@@ -33,7 +33,8 @@ export default function HotelCard({ hotel }: propsType) {
         <Image
           alt={"image"}
           src={hotel.imageUrl}
-          fill
+          width={300}
+          height={300}
           className="w-full h-full"
         ></Image>
       </div>

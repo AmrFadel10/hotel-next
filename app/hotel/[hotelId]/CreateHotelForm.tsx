@@ -14,6 +14,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoIosAdd } from "react-icons/io";
 import AddRoomForm from "@/components/AddRoomForm";
 import RoomCard from "@/components/RoomCard";
+import { Spinner } from "@/components/Spinner";
 
 type hotelPropsType = Hotel & { rooms: Room[] };
 function CreateHotelForm({ hotel }: { hotel?: hotelPropsType }) {
@@ -628,8 +629,16 @@ function CreateHotelForm({ hotel }: { hotel?: hotelPropsType }) {
                     setOpen(true);
                   }}
                 >
-                  <IoIosAdd size={18} />
-                  Add room
+                  {loading ? (
+                    <>
+                      <Spinner size={16} /> <span>Loading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <IoIosAdd size={18} />
+                      Add room
+                    </>
+                  )}
                 </button>
               </>
             )}

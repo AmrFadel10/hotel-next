@@ -11,10 +11,12 @@ import { createUservalid } from "@/utils/validation";
 import { DOMAIN } from "@/utils/CONSTANTS";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Spinner } from "@/components/Spinner";
 
 export default function SignupForm() {
   const router = useRouter();
   const [data, setData] = useState({ email: "", password: "", username: "" });
+  const [loading, setLoading] = useState(false);
   const [togglePassword, setTogglePassword] = useState(false);
   const [messagesError, setMessagesError] = useState<{
     [prop: string]: string;
@@ -26,6 +28,7 @@ export default function SignupForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const validate = createUservalid.safeParse(data);
     const messagesError: { [prop: string]: string } = {};
     if (!validate.success) {
@@ -55,6 +58,8 @@ export default function SignupForm() {
       toast.error(
         error instanceof Error ? error.message : "Something went wrong!"
       );
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -136,14 +141,25 @@ export default function SignupForm() {
           </p>
         )}
       </div>
-      <button className="w-fit mx-auto py-2 font-semibold text-sm px-8 text-gray-50 text-center bg-indigo-500 hover:bg-indigo-600 rounded-lg">
-        Signup
+      <button
+        disabled={loading}
+        className={`flex items-center gap-2 w-fit mx-auto py-2 font-semibold text-sm px-8 text-gray-50 text-center bg-slate-800 hover:bg-slate-950 rounded-lg  ${
+          loading && "cursor-not-allowed"
+        }`}
+      >
+        {loading ? (
+          <>
+            <Spinner size={16} /> <span>Loading...</span>
+          </>
+        ) : (
+          "Signup"
+        )}
       </button>
       <div className="text-sm text-gray-400 ">
         {"Already have account ? "}
         <Link
           href={"/login"}
-          className="hover:underline underline-offset-2 text-indigo-500 hover:text-indigo-700"
+          className="hover:underline underline-offset-2 text-slate-800 hover:text-slate-950"
         >
           Login
         </Link>

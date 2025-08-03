@@ -1,20 +1,28 @@
 import { getHotels } from "@/components/GetHotels";
 import HotelList from "@/components/HotelList";
+import Pagination from "@/components/Pagination";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home({
-  searchParams: { search, country, city, state },
+  searchParams: { search, country, city, state, page },
 }: {
   searchParams: {
     search?: string;
     country?: string;
     city?: string;
     state?: string;
+    page?: string;
   };
 }) {
-  const hotels = await getHotels(search, country, city, state);
+  const { hotels, count } = await getHotels(
+    parseInt(page || "1"),
+    search,
+    country,
+    city,
+    state
+  );
   if (!hotels) return redirect("/404");
   if (!!hotels && hotels.length === 0) {
     return (
@@ -27,8 +35,9 @@ export default async function Home({
   }
 
   return (
-    <section className="w-full flex items-start ">
+    <section className="w-full  flex flex-col justify-between flex-1">
       <HotelList hotels={hotels} />
+      <Pagination count={count} />
     </section>
   );
 }

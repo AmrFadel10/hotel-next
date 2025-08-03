@@ -9,10 +9,12 @@ import { DOMAIN } from "@/utils/CONSTANTS";
 import { useRouter } from "next/navigation";
 import { loginUservalid } from "@/utils/validation";
 import toast from "react-hot-toast";
+import { Spinner } from "@/components/Spinner";
 
 export default function LoginForm() {
   const [data, setData] = useState({ email: "", password: "" });
   const [togglePassword, setTogglePassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [messagesError, setMessagesError] = useState<{
@@ -24,6 +26,7 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const validate = loginUservalid.safeParse(data);
     const messagesError: { [prop: string]: string } = {};
     if (!validate.success) {
@@ -52,6 +55,8 @@ export default function LoginForm() {
       toast.error(
         error instanceof Error ? error.message : "Something went wrong!"
       );
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -110,14 +115,25 @@ export default function LoginForm() {
           {messagesError.password}
         </p>
       )}
-      <button className="w-fit mx-auto py-2 font-semibold text-sm px-8 text-gray-50 text-center bg-indigo-500 hover:bg-indigo-600 rounded-lg">
-        Login
+      <button
+        disabled={loading}
+        className={`flex items-center gap-2 w-fit mx-auto py-2 font-semibold text-sm px-8 text-gray-50 text-center bg-slate-800 hover:bg-slate-950 rounded-lg  ${
+          loading && "cursor-not-allowed"
+        }`}
+      >
+        {loading ? (
+          <>
+            <Spinner size={16} /> <span>Loading...</span>
+          </>
+        ) : (
+          "Login"
+        )}
       </button>
       <div className="text-sm text-gray-400 ">
         {"Don't have account ? "}
         <Link
           href={"/signup"}
-          className="hover:underline underline-offset-2 text-indigo-500 hover:text-indigo-700"
+          className="hover:underline underline-offset-2 text-slate-800 hover:text-slate-950"
         >
           Signup
         </Link>

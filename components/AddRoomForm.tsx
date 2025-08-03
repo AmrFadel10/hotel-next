@@ -15,6 +15,7 @@ import React, {
 import toast from "react-hot-toast";
 import { IoIosClose } from "react-icons/io";
 import { LuPencil } from "react-icons/lu";
+import { Spinner } from "./Spinner";
 
 interface HotelType extends Hotel {
   rooms: Room[];
@@ -335,7 +336,7 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
               htmlFor="image1"
               className="border-2 rounded-lg  w-full h-40 cursor-pointer text-sm font-bold text-gray-600 shadow-sm hover:bg-gray-50 flex items-center justify-center"
             >
-              <span className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-slate-50">
+              <span className="px-4 py-2 rounded-md bg-slate-800 hover:bg-slate-950 text-slate-50">
                 Upload a file
               </span>
               <input
@@ -562,13 +563,21 @@ export default function AddRoomForm({ hotel, room, setOpen }: propsType) {
             </div>
           </div>
           <button
-            className={`flex gap-2 items-center w-fit px-3 py-2 rounded-md text-sm bg-indigo-600 hover:bg-indigo-800 transition-colors text-gray-50  ml-2 mt-4 font-bold ${
+            className={`flex gap-2 items-center w-fit px-3 py-2 rounded-md text-sm bg-slate-800 hover:bg-slate-950 transition-colors text-gray-50  ml-2 mt-4 font-bold ${
               loading && "cursor-not-allowed"
             }`}
             disabled={loading}
           >
-            <LuPencil size={18} />
-            {hotel ? "Update" : "Create"}
+            {loading ? (
+              <>
+                <Spinner size={16} /> <span>Loading...</span>
+              </>
+            ) : (
+              <>
+                <LuPencil size={18} />
+                {hotel ? "Update" : "Create"}
+              </>
+            )}
           </button>
         </form>
       </section>
