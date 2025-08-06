@@ -1,3 +1,4 @@
+"use client";
 export const Spinner = ({
   size,
   color = "#eff6ff",
