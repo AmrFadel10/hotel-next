@@ -1,10 +1,9 @@
-import { Spinner } from "@/components/Spinner";
 import React from "react";
 
 export default function Loading() {
   return (
-    <div className=" min-h-screen w-screen flex items-center justify-center fixed left-0 top-0">
-      <Spinner size={45} color="#0f172a" />
+    <div className="text-3xl min-h-screen w-full flex justify-center items-center">
+      <span className="bg-transparent border-8  rounded-full border-r-transparent animate-spin block  w-14   h-14  border-slate-950"></span>
     </div>
   );
 }
