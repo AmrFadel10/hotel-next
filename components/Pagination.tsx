@@ -15,6 +15,7 @@ const Pagination = ({ count }: { count: number }) => {
     router.push(`/?${searchParamsString}`);
   };
   const numberOfPages = Math.ceil(count / 9);
+  console.log(pageInSearchParams);
   return (
     <section className="flex gap-1 w-fit mx-auto mt-8">
       <button
@@ -28,10 +29,12 @@ const Pagination = ({ count }: { count: number }) => {
             if (pageInSearchParams <= 1) {
               return;
             }
-            CreateQueryString(
-              searchParams,
-              "page",
-              `${pageInSearchParams - 1}`
+            router.push(
+              `/?${CreateQueryString(
+                searchParams,
+                "page",
+                `${pageInSearchParams - 1}`
+              )}`
             );
           }
         }}
@@ -55,7 +58,7 @@ const Pagination = ({ count }: { count: number }) => {
       })}
       <button
         className={`${
-          pageInSearchParams == 1
+          pageInSearchParams >= numberOfPages
             ? "cursor-no-drop opacity-65"
             : "hover:bg-slate-950 hover:text-gray-50 cursor-pointer"
         } border border-gray-400 rounded-md py-[2px] px-2  bg-white transition`}
@@ -68,6 +71,13 @@ const Pagination = ({ count }: { count: number }) => {
               searchParams,
               "page",
               `${pageInSearchParams + 1}`
+            );
+            router.push(
+              `/?${CreateQueryString(
+                searchParams,
+                "page",
+                `${pageInSearchParams + 1}`
+              )}`
             );
           }
         }}

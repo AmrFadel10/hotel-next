@@ -35,7 +35,7 @@ export default async function Home({
   }
 
   return (
-    <section className="w-full  flex flex-col justify-between flex-1">
+    <section className="w-full  flex flex-col  flex-1">
       <HotelList hotels={hotels} />
       <Pagination count={count} />
     </section>
